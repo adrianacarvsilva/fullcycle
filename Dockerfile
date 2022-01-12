@@ -1,4 +1,5 @@
-FROM golang:1.17
+# FROM golang:1.17
+FROM golang:alpine as builder
 
 WORKDIR /go/src/app
 
@@ -8,6 +9,9 @@ RUN go mod init
 
 RUN go get -d -v ./...
 
-RUN go install -v ./...
+RUN go build -o /go/bin/desafio
 
-CMD ["app"]
+FROM scratch
+COPY --from=builder /go/bin/desafio /go/bin/desafio
+
+ENTRYPOINT ["/go/bin/desafio"]
